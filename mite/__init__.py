@@ -3,7 +3,6 @@ os_sys = platform.system().lower()
 
 # aesthetic imports
 import matplotlib
-matplotlib.use('QT5Agg')
 
 import numpy
 numpy.set_printoptions( precision = 3, suppress = True )
