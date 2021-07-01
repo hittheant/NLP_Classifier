@@ -5,7 +5,7 @@ from mite.filters import AbstractBaseFilter
 
 class WaveletTransformFilter(AbstractBaseFilter):
     """ A Python implementation of a wavelet transform filter """
-    def __init__(self, scales=range(1, 128), wavelet_name='morl'):
+    def __init__(self, scales=range(120, 128), wavelet_name='morl'):
         self.scales = scales
         self.wavelet_name = wavelet_name
 
