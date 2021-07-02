@@ -7,7 +7,7 @@ from mite.filters import ParallelFilter
 from mite.filters.time import MeanAbsoluteValueFilter, VarianceFilter, WaveformLengthFilter, SlopeSignChangeFilter, \
     ZeroCrossingsFilter
 from mite.filters.wavelet.WaveletTransformFilter import WaveletTransformFilter
-from mite.filters.spectral.AutoRegressiveFilter import AutoRegressiveFilter
+from mite.filters.autoregressive.AutoRegressiveFilter import AutoRegressiveFilter
 from mite.filters.spectral.FourierTransformFilter import FourierTransformFilter
 from sklearn.feature_selection import f_classif
 from sklearn.decomposition import PCA
@@ -49,11 +49,12 @@ ar_features = []
 ft_features = []
 cwt_features = []
 
+
 for sample in tqdm(range(0, np.shape(data)[1], 100)):
     window = data[0:6, sample:sample+100]  # grab device measurements
-    td5_features.append(cwt.filter(np.transpose(window)))  # extract features
+    td5_features.append(td5.filter(np.transpose(window)))  # extract features
     ar_features.append(ar.filter(np.transpose(window)))  # extract features
-    ft_features.append(cwt.filter(np.transpose(window)))  # extract features\
+    ft_features.append(ft.filter(np.transpose(window)))  # extract features\
 
 # TD5 Featureset
 td5_features = np.vstack(np.array(td5_features))
@@ -106,9 +107,9 @@ window = []
 
 for sample in tqdm(range(0, np.shape(ds_data)[1], 50)):
     window = ds_data[0:6, sample:sample+50]  # grab device measurements
-    td5_features.append(cwt.filter(np.transpose(window)))  # extract features
+    td5_features.append(td5.filter(np.transpose(window)))  # extract features
     ar_features.append(ar.filter(np.transpose(window)))  # extract features
-    ft_features.append(cwt.filter(np.transpose(window)))  # extract features
+    ft_features.append(ft.filter(np.transpose(window)))  # extract features
 
 # TD5 Featureset
 td5_features = np.vstack(np.array(td5_features))
