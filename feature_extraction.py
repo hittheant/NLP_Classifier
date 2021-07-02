@@ -12,9 +12,6 @@ from mite.filters.spectral.FourierTransformFilter import FourierTransformFilter
 from sklearn.feature_selection import f_classif
 from sklearn.decomposition import PCA
 
-matplotlib.use('QT5Agg')
-
-
 # importing dataset
 hf = h5py.File('s15data.mat', 'r')
 data = hf.get('dat')
