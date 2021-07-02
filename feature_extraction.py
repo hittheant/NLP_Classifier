@@ -53,8 +53,7 @@ for sample in tqdm(range(0, np.shape(data)[1], 100)):
     window = data[0:6, sample:sample+100]  # grab device measurements
     td5_features.append(cwt.filter(np.transpose(window)))  # extract features
     ar_features.append(ar.filter(np.transpose(window)))  # extract features
-    ft_features.append(cwt.filter(np.transpose(window)))  # extract features
-    cwt_features.append(cwt.filter(np.transpose(window)))  # extract features
+    ft_features.append(cwt.filter(np.transpose(window)))  # extract features\
 
 # TD5 Featureset
 td5_features = np.vstack(np.array(td5_features))
@@ -81,6 +80,15 @@ print("Fourier Transform Featureset")
 for i in range(len(f)):
     print('Feature %d: %f %f' % (i, f[i], p[i]))
 
+td5_features = []
+ar_features = []
+ft_features = []
+cwt_features = []
+
+for sample in tqdm(range(0, np.shape(data)[1], 100)):
+    window = data[0:6, sample:sample+100]
+    cwt_features.append(cwt.filter(np.transpose(window)))  # extract features
+
 # Wavelet Transform Featureset
 cwt_features = np.vstack(np.array(cwt_features))
 pca = PCA(n_components=16)
@@ -93,19 +101,14 @@ for i in range(len(f)):
     print('Feature %d: %f %f' % (i, f[i], p[i]))
 
 
-print("Downsampled Data")
+print("Downsampled Data:")
 window = []
-td5_features = []
-ar_features = []
-ft_features = []
-cwt_features = []
 
 for sample in tqdm(range(0, np.shape(ds_data)[1], 50)):
     window = ds_data[0:6, sample:sample+50]  # grab device measurements
     td5_features.append(cwt.filter(np.transpose(window)))  # extract features
     ar_features.append(ar.filter(np.transpose(window)))  # extract features
     ft_features.append(cwt.filter(np.transpose(window)))  # extract features
-    cwt_features.append(cwt.filter(np.transpose(window)))  # extract features
 
 # TD5 Featureset
 td5_features = np.vstack(np.array(td5_features))
@@ -132,6 +135,15 @@ f, p = f_classif(ft_features, y_ds)
 print("Fourier Transform Featureset")
 for i in range(len(f)):
     print('Feature %d: %f %f' % (i, f[i], p[i]))
+
+td5_features = []
+ar_features = []
+ft_features = []
+cwt_features = []
+
+for sample in tqdm(range(0, np.shape(ds_data)[1], 50)):
+    window = ds_data[0:6, sample:sample+50]  # grab device measurements
+    cwt_features.append(cwt.filter(np.transpose(window)))  # extract features
 
 # Wavelet Transform Featureset
 cwt_features = np.vstack(np.array(cwt_features))
