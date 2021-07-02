@@ -7,6 +7,10 @@ from mite.filters import ParallelFilter
 from mite.filters.time import MeanAbsoluteValueFilter, VarianceFilter, WaveformLengthFilter, SlopeSignChangeFilter, \
     ZeroCrossingsFilter
 from mite.filters.wavelet.WaveletTransformFilter import WaveletTransformFilter
+from mite.filters.spectral.AutoRegressiveFilter import AutoRegressiveFilter
+from mite.filters.spectral.FourierTransformFilter import FourierTransformFilter
+from sklearn.feature_selection import f_classif
+from sklearn.decomposition import PCA
 
 matplotlib.use('QT5Agg')
 
@@ -21,42 +25,129 @@ y_means = np.mean(y.reshape(-1, 100), axis=1)
 diff = (np.max(y) - np.min(y))/3
 bins = np.array([np.min(y), np.min(y) + diff, np.min(y) + 2*diff, np.max(y)])
 y_binned = np.digitize(y_means, bins)
+y = y_binned
 
-ds_data = data[0:10:-1]
+y_ds = data[8, ::10]
+y_ds_means = np.mean(y_ds.reshape(-1, 50), axis=1)
+diff = (np.max(y_ds) - np.min(y_ds))/3
+bins = np.array([np.min(y_ds), np.min(y_ds) + diff, np.min(y_ds) + 2*diff, np.max(y_ds)])
+y_ds_binned = np.digitize(y_ds_means, bins)
+y_ds = y_ds_binned
+
+ds_data = data[::10]
 sampling_rate = 10240
-
-# processing variables
-window_size = 100
-window_step = 100
 
 td5 = ParallelFilter(filters=[MeanAbsoluteValueFilter(),
                               VarianceFilter(),
                               WaveformLengthFilter(),
                               SlopeSignChangeFilter(),
                               ZeroCrossingsFilter()])
-
+ar = AutoRegressiveFilter()
 cwt = WaveletTransformFilter()
+ft = FourierTransformFilter()
 
 window = []
-tfeat = []
-features = []
+td5_features = []
+ar_features = []
+ft_features = []
+cwt_features = []
 
-sample = 0
-t = 0
-for sample in tqdm(range(0, 1*sampling_rate, 100)):
+for sample in tqdm(range(0, np.shape(data)[1], 100)):
     window = data[0:6, sample:sample+100]  # grab device measurements
-    features.append(cwt.filter(np.transpose(window)))  # extract features
-    t = (sample + 100) / sampling_rate
-    tfeat.append(t)  # save timestamp
+    td5_features.append(cwt.filter(np.transpose(window)))  # extract features
+    ar_features.append(ar.filter(np.transpose(window)))  # extract features
+    ft_features.append(cwt.filter(np.transpose(window)))  # extract features
+    cwt_features.append(cwt.filter(np.transpose(window)))  # extract features
 
-raw = data[0:sample]
-traw = range(sample)
-tfeat = np.hstack(tfeat)
-features = np.array(features)
-features = np.vstack(features)
+# TD5 Featureset
+td5_features = np.vstack(np.array(td5_features))
+f, p = f_classif(td5_features, y)
+print("TD5 Featureset")
+for i in range(len(f)):
+    print('Feature %d: %f %f' % (i, f[i], p[i]))
 
-print('Done!')
+# AR Featureset
+ar_features = np.vstack(np.array(ar_features))
+f, p = f_classif(ar_features, y)
+print("AR Featureset")
+for i in range(len(f)):
+    print('Feature %d: %f %f' % (i, f[i], p[i]))
 
+# Fourier Transform Featureset
+ft_features = np.vstack(np.array(ft_features))
+pca = PCA(n_components=16)
+pca.fit(ft_features)
+ft_features = pca.transform(ft_features)
+
+f, p = f_classif(ft_features, y)
+print("Fourier Transform Featureset")
+for i in range(len(f)):
+    print('Feature %d: %f %f' % (i, f[i], p[i]))
+
+# Wavelet Transform Featureset
+cwt_features = np.vstack(np.array(cwt_features))
+pca = PCA(n_components=16)
+pca.fit(cwt_features)
+cwt_features = pca.transform(cwt_features)
+
+f, p = f_classif(cwt_features, y)
+print("Wavelet Transform Featureset")
+for i in range(len(f)):
+    print('Feature %d: %f %f' % (i, f[i], p[i]))
+
+
+print("Downsampled Data")
+window = []
+td5_features = []
+ar_features = []
+ft_features = []
+cwt_features = []
+
+for sample in tqdm(range(0, np.shape(ds_data)[1], 50)):
+    window = ds_data[0:6, sample:sample+50]  # grab device measurements
+    td5_features.append(cwt.filter(np.transpose(window)))  # extract features
+    ar_features.append(ar.filter(np.transpose(window)))  # extract features
+    ft_features.append(cwt.filter(np.transpose(window)))  # extract features
+    cwt_features.append(cwt.filter(np.transpose(window)))  # extract features
+
+# TD5 Featureset
+td5_features = np.vstack(np.array(td5_features))
+f, p = f_classif(td5_features, y_ds)
+print("TD5 Featureset")
+for i in range(len(f)):
+    print('Feature %d: %f %f' % (i, f[i], p[i]))
+
+# AR Featureset
+ar_features = np.vstack(np.array(ar_features))
+
+f, p = f_classif(ar_features, y_ds)
+print("AR Featureset")
+for i in range(len(f)):
+    print('Feature %d: %f %f' % (i, f[i], p[i]))
+
+# Fourier Transform Featureset
+ft_features = np.vstack(np.array(ft_features))
+pca = PCA(n_components=16)
+pca.fit(ft_features)
+ft_features = pca.transform(ft_features)
+
+f, p = f_classif(ft_features, y_ds)
+print("Fourier Transform Featureset")
+for i in range(len(f)):
+    print('Feature %d: %f %f' % (i, f[i], p[i]))
+
+# Wavelet Transform Featureset
+cwt_features = np.vstack(np.array(cwt_features))
+pca = PCA(n_components=16)
+pca.fit(cwt_features)
+cwt_features = pca.transform(cwt_features)
+
+f, p = f_classif(cwt_features, y_ds)
+print("Wavelet Transform Featureset")
+for i in range(len(f)):
+    print('Feature %d: %f %f' % (i, f[i], p[i]))
+
+'''
 fig = plt.figure()
 for i in range(7):
     ax = fig.add_subplot(7, 1, i + 1)
@@ -72,3 +163,4 @@ for i in range(7):
     else:
         ax.set_xticks([])
 plt.show()
+'''
