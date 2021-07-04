@@ -25,15 +25,9 @@ diff = (np.max(y) - np.min(y))/3
 bins = np.array([np.min(y), np.min(y) + diff, np.min(y) + 2*diff, np.max(y)])
 y_binned = np.digitize(y_means, bins)
 y = y_binned
+y_means = []
+y_binned = []
 
-y_ds = data[8, ::10]
-y_ds_means = np.mean(y_ds.reshape(-1, 50), axis=1)
-diff = (np.max(y_ds) - np.min(y_ds))/3
-bins = np.array([np.min(y_ds), np.min(y_ds) + diff, np.min(y_ds) + 2*diff, np.max(y_ds)])
-y_ds_binned = np.digitize(y_ds_means, bins)
-y_ds = y_ds_binned
-
-ds_data = data[::10]
 sampling_rate = 10240
 
 td5 = ParallelFilter(filters=[MeanAbsoluteValueFilter(),
@@ -86,6 +80,7 @@ td5_features = []
 ar_features = []
 ft_features = []
 cwt_features = []
+pca = []
 
 for sample in tqdm(range(0, np.shape(data)[1], 100)):
     window = data[0:6, sample:sample+100]
@@ -101,6 +96,19 @@ f, p = f_classif(cwt_features, y)
 f.write("Wavelet Transform Featureset")
 for i in range(len(f)):
     f.write('Feature %d: %f %f' % (i, f[i], p[i]))
+
+y_ds = data[8, ::10]
+y_ds_means = np.mean(y_ds.reshape(-1, 50), axis=1)
+diff = (np.max(y_ds) - np.min(y_ds))/3
+bins = np.array([np.min(y_ds), np.min(y_ds) + diff, np.min(y_ds) + 2*diff, np.max(y_ds)])
+y_ds_binned = np.digitize(y_ds_means, bins)
+y_ds = y_ds_binned
+ds_data = data[::10]
+
+data = []
+y = []
+y_ds_means = []
+y_ds_binned = []
 
 f.write("Downsampled Data:")
 window = []
@@ -141,6 +149,7 @@ td5_features = []
 ar_features = []
 ft_features = []
 cwt_features = []
+pca = []
 
 for sample in tqdm(range(0, np.shape(ds_data)[1], 50)):
     window = ds_data[0:6, sample:sample+50]  # grab device measurements
