@@ -17,6 +17,8 @@ hf = h5py.File('s15data.mat', 'r')
 data = hf.get('dat')
 data = np.array(data)
 
+f = open("output.txt", "a")
+
 y = data[8, :]
 y_means = np.mean(y.reshape(-1, 100), axis=1)
 diff = (np.max(y) - np.min(y))/3
@@ -49,26 +51,25 @@ ar_features = []
 ft_features = []
 cwt_features = []
 
-
 for sample in tqdm(range(0, np.shape(data)[1], 100)):
     window = data[0:6, sample:sample+100]  # grab device measurements
     td5_features.append(td5.filter(np.transpose(window)))  # extract features
     ar_features.append(ar.filter(np.transpose(window)))  # extract features
-    ft_features.append(ft.filter(np.transpose(window)))  # extract features\
+    ft_features.append(ft.filter(np.transpose(window)))  # extract features
 
 # TD5 Featureset
 td5_features = np.vstack(np.array(td5_features))
 f, p = f_classif(td5_features, y)
-print("TD5 Featureset")
+f.write("TD5 Featureset")
 for i in range(len(f)):
-    print('Feature %d: %f %f' % (i, f[i], p[i]))
+    f.write('Feature %d: %f %f' % (i, f[i], p[i]))
 
 # AR Featureset
 ar_features = np.vstack(np.array(ar_features))
 f, p = f_classif(ar_features, y)
-print("AR Featureset")
+f.write("AR Featureset")
 for i in range(len(f)):
-    print('Feature %d: %f %f' % (i, f[i], p[i]))
+    f.write('Feature %d: %f %f' % (i, f[i], p[i]))
 
 # Fourier Transform Featureset
 ft_features = np.vstack(np.array(ft_features))
@@ -77,9 +78,9 @@ pca.fit(ft_features)
 ft_features = pca.transform(ft_features)
 
 f, p = f_classif(ft_features, y)
-print("Fourier Transform Featureset")
+f.write("Fourier Transform Featureset")
 for i in range(len(f)):
-    print('Feature %d: %f %f' % (i, f[i], p[i]))
+    f.write('Feature %d: %f %f' % (i, f[i], p[i]))
 
 td5_features = []
 ar_features = []
@@ -97,12 +98,11 @@ pca.fit(cwt_features)
 cwt_features = pca.transform(cwt_features)
 
 f, p = f_classif(cwt_features, y)
-print("Wavelet Transform Featureset")
+f.write("Wavelet Transform Featureset")
 for i in range(len(f)):
-    print('Feature %d: %f %f' % (i, f[i], p[i]))
+    f.write('Feature %d: %f %f' % (i, f[i], p[i]))
 
-
-print("Downsampled Data:")
+f.write("Downsampled Data:")
 window = []
 
 for sample in tqdm(range(0, np.shape(ds_data)[1], 50)):
@@ -114,17 +114,17 @@ for sample in tqdm(range(0, np.shape(ds_data)[1], 50)):
 # TD5 Featureset
 td5_features = np.vstack(np.array(td5_features))
 f, p = f_classif(td5_features, y_ds)
-print("TD5 Featureset")
+f.write("TD5 Featureset")
 for i in range(len(f)):
-    print('Feature %d: %f %f' % (i, f[i], p[i]))
+    f.write('Feature %d: %f %f' % (i, f[i], p[i]))
 
 # AR Featureset
 ar_features = np.vstack(np.array(ar_features))
 
 f, p = f_classif(ar_features, y_ds)
-print("AR Featureset")
+f.write("AR Featureset")
 for i in range(len(f)):
-    print('Feature %d: %f %f' % (i, f[i], p[i]))
+    f.write('Feature %d: %f %f' % (i, f[i], p[i]))
 
 # Fourier Transform Featureset
 ft_features = np.vstack(np.array(ft_features))
@@ -133,9 +133,9 @@ pca.fit(ft_features)
 ft_features = pca.transform(ft_features)
 
 f, p = f_classif(ft_features, y_ds)
-print("Fourier Transform Featureset")
+f.write("Fourier Transform Featureset")
 for i in range(len(f)):
-    print('Feature %d: %f %f' % (i, f[i], p[i]))
+    f.write('Feature %d: %f %f' % (i, f[i], p[i]))
 
 td5_features = []
 ar_features = []
@@ -153,10 +153,11 @@ pca.fit(cwt_features)
 cwt_features = pca.transform(cwt_features)
 
 f, p = f_classif(cwt_features, y_ds)
-print("Wavelet Transform Featureset")
+f.write("Wavelet Transform Featureset")
 for i in range(len(f)):
-    print('Feature %d: %f %f' % (i, f[i], p[i]))
+    f.write('Feature %d: %f %f' % (i, f[i], p[i]))
 
+f.close()
 '''
 fig = plt.figure()
 for i in range(7):
