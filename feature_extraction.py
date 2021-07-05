@@ -97,7 +97,7 @@ outfile.write("Wavelet Transform Featureset")
 for i in range(len(f)):
     outfile.write('Feature %d: %f %f' % (i, f[i], p[i]))
 
-y_ds = data[8, ::10]
+y_ds = data[8, :]
 y_ds_means = np.mean(y_ds.reshape(-1, 50), axis=1)
 diff = (np.max(y_ds) - np.min(y_ds))/3
 bins = np.array([np.min(y_ds), np.min(y_ds) + diff, np.min(y_ds) + 2*diff, np.max(y_ds)])
