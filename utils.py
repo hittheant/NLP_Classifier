@@ -15,6 +15,7 @@ def class_bin(y, window):
     diff = (np.max(y) - np.min(y)) / 3
     bins = np.array([np.min(y), np.min(y) + diff, np.min(y) + 2 * diff, np.max(y)])
     y = np.digitize(y, bins)
+    return y
 
 
 def feature_extract(data, featureset, window_size, shift_size):
