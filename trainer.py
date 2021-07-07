@@ -11,9 +11,9 @@ from mite.utils.Metrics import confusion_matrix
 
 if __name__ == '__main__':
     parser = ArgumentParser(description='Get image edge maps')
-    parser.add_argument('--data_dir', required=True, type=str,
+    parser.add_argument('--data_dir', required=False, type=str, default='./s15data.mat',
                         help='path to mat file')
-    parser.add_argument('--save_dir', required=True, type=str,
+    parser.add_argument('--save_dir', required=False, type=str, default='.',
                         help='path to model save directory')
     parser.add_argument('--model', required=False, type=str, default='lda',
                         help='type of model to train')
@@ -51,7 +51,7 @@ if __name__ == '__main__':
     yhat = mdl.predict(Xtest)
 
     fig = plt.figure(figsize=(10.0, 5.0))
-    cm = confusion_matrix(ytest, yhat, labels=data.target_names, show=False)
+    cm = confusion_matrix(ytest, yhat, show=False)
     fig.set_title('EMG Dataset Classification')
     plt.tight_layout()
     plt.show()
