@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from mite.models.LinearDiscriminantAnalysis import LinearDiscriminantAnalysis
+from mite.models.SupportVectorMachine import SupportVectorMachine
+from mite.models.MultiLayerPerceptron import MultiLayerPerceptron
 from argparse import ArgumentParser
 from utils import class_bin, feature_extract
 from mite.utils.Metrics import confusion_matrix
@@ -37,8 +39,15 @@ if __name__ == '__main__':
     x = feature_extract(data[0:args.emg_indices, :], args.featureset,
                         args.window_size, args.shift_size)
 
-    Xtrain, Xtest, ytrain, ytest = train_test_split(data.data, data.target, test_size=0.33)
-    mdl = LinearDiscriminantAnalysis(Xtrain, ytrain)
+    Xtrain, Xtest, ytrain, ytest = train_test_split(x, y, test_size=0.33)
+
+    if args.model == 'lda':
+        mdl = LinearDiscriminantAnalysis(Xtrain, ytrain)
+    elif args.model == 'svm':
+        mdl = SupportVectorMachine(Xtrain, ytrain, regressor=False)
+    elif args.model == 'mlp':
+        mdl = MultiLayerPerceptron(Xtrain, ytrain, regressor=False)
+
     yhat = mdl.predict(Xtest)
 
     fig = plt.figure(figsize=(10.0, 5.0))
