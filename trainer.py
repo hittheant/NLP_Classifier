@@ -7,7 +7,8 @@ from mite.models.SupportVectorMachine import SupportVectorMachine
 from mite.models.MultiLayerPerceptron import MultiLayerPerceptron
 from argparse import ArgumentParser
 from utils import class_bin, feature_extract
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, \
+    precision_recall_fscore_support
 
 if __name__ == '__main__':
     parser = ArgumentParser(description='Get image edge maps')
@@ -56,6 +57,7 @@ if __name__ == '__main__':
     acc = np.sum(conf_mat.diagonal()) / np.sum(conf_mat)
     print('Overall accuracy: {} %'.format(acc * 100))
     print(conf_mat)
-    disp = ConfusionMatrixDisplay(confusion_matrix=conf_mat)
-    disp.plot()
+    print("Precision, recall and fscore:")
+    print(precision_recall_fscore_support(ytest, yhat))
+
 
