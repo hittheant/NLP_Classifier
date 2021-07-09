@@ -7,7 +7,7 @@ from mite.models.SupportVectorMachine import SupportVectorMachine
 from mite.models.MultiLayerPerceptron import MultiLayerPerceptron
 from argparse import ArgumentParser
 from utils import class_bin, feature_extract
-from mite.utils.Metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 if __name__ == '__main__':
     parser = ArgumentParser(description='Get image edge maps')
@@ -52,8 +52,10 @@ if __name__ == '__main__':
 
     yhat = mdl.predict(Xtest)
 
-    fig, ax = plt.subplots(figsize=(10.0, 5.0))
-    cm = confusion_matrix(ytest, yhat, ax=ax, show=False)
-    ax.set_title('EMG Dataset Classification')
-    plt.tight_layout()
-    plt.savefig(args.save_name)
+    conf_mat = confusion_matrix(yhat, ytest)
+    acc = np.sum(conf_mat.diagonal()) / np.sum(conf_mat)
+    print('Overall accuracy: {} %'.format(acc * 100))
+
+    disp = ConfusionMatrixDisplay(confusion_matrix=conf_mat)
+    disp.plot()
+
