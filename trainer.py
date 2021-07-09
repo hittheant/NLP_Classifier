@@ -39,7 +39,7 @@ if __name__ == '__main__':
     x = feature_extract(data[0:args.emg_indices, :], args.featureset,
                         args.window_size, args.shift_size)
 
-    Xtrain, Xtest, ytrain, ytest = train_test_split(x, y, test_size=0.33)
+    Xtrain, Xtest, ytrain, ytest = train_test_split(x, y, test_size=0.33, shuffle=True)
 
     if args.model == 'lda':
         mdl = LinearDiscriminantAnalysis(Xtrain, ytrain)
@@ -50,8 +50,8 @@ if __name__ == '__main__':
 
     yhat = mdl.predict(Xtest)
 
-    fig = plt.figure(figsize=(10.0, 5.0))
-    cm = confusion_matrix(ytest, yhat, show=False)
-    fig.set_title('EMG Dataset Classification')
+    fig, ax = plt.subplots(figsize=(10.0, 5.0))
+    cm = confusion_matrix(ytest, yhat, ax=ax, show=False)
+    ax.set_title('EMG Dataset Classification')
     plt.tight_layout()
-    plt.show()
+    plt.savefig('output.png')
