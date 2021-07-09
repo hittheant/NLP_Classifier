@@ -25,11 +25,11 @@ if __name__ == '__main__':
                         help='level of downsampling')
     parser.add_argument('--window_size', required=False, type=int, default=500,
                         help='window size for feature extraction')
-    parser.add_argument('--shift_size', required=False, type=int, default=500,
+    parser.add_argument('--shift_size', required=False, type=int, default=100,
                         help='step size of windows')
     parser.add_argument('--emg_indices', required=False, type=int, default=6,
                         help='maximum index of EMG data columns')
-    parser.add_argument('--force_index', required=False, type=int, default=8,
+    parser.add_argument('--force_index', required=False, type=int, default=10,
                         help='force data to be classified')
     args = parser.parse_args()
 
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     conf_mat = confusion_matrix(yhat, ytest)
     acc = np.sum(conf_mat.diagonal()) / np.sum(conf_mat)
     print('Overall accuracy: {} %'.format(acc * 100))
-
+    print(conf_mat)
     disp = ConfusionMatrixDisplay(confusion_matrix=conf_mat)
     disp.plot()
 
