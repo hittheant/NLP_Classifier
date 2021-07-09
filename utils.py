@@ -10,7 +10,7 @@ from sklearn.feature_selection import f_classif
 from sklearn.decomposition import PCA
 
 
-def class_bin(y, window, n_classes=3):
+def class_bin(y, window, n_classes=2):
     y = np.mean(y.reshape(-1, window), axis=1)
     bins = np.linspace(np.min(y), np.max(y), num=n_classes)
     y = np.digitize(y, bins)
@@ -26,6 +26,13 @@ def feature_extract(data, featureset, window_size, shift_size):
                                       ZeroCrossingsFilter()])
     elif featureset == 'ar':
         data_filter = AutoRegressiveFilter()
+    elif featureset == 'td5ar':
+        data_filter = ParallelFilter(filters=[MeanAbsoluteValueFilter(),
+                                              VarianceFilter(),
+                                              WaveformLengthFilter(),
+                                              SlopeSignChangeFilter(),
+                                              ZeroCrossingsFilter(),
+                                              AutoRegressiveFilter()])
     elif featureset == 'dwt':
         data_filter = WaveletTransformFilter()
     elif featureset == 'ft':
