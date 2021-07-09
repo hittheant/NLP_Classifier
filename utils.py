@@ -10,10 +10,9 @@ from sklearn.feature_selection import f_classif
 from sklearn.decomposition import PCA
 
 
-def class_bin(y, window):
+def class_bin(y, window, n_classes=3):
     y = np.mean(y.reshape(-1, window), axis=1)
-    diff = (np.max(y) - np.min(y)) / 3
-    bins = np.array([np.min(y), np.min(y) + diff, np.min(y) + 2 * diff, np.max(y)])
+    bins = np.linspace(np.min(y), np.max(y), num=n_classes)
     y = np.digitize(y, bins)
     return y
 

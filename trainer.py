@@ -15,15 +15,17 @@ if __name__ == '__main__':
                         help='path to mat file')
     parser.add_argument('--save_dir', required=False, type=str, default='.',
                         help='path to model save directory')
+    parser.add_argument('--save_name', required=False, type=str, default='output.png',
+                        help='path to model save directory')
     parser.add_argument('--model', required=False, type=str, default='lda',
                         help='type of model to train')
     parser.add_argument('--featureset', required=False, type=str, default='td5',
                         help='featureset to be extracted')
     parser.add_argument('--downsampling', required=False, type=int, default=1,
                         help='level of downsampling')
-    parser.add_argument('--window_size', required=False, type=int, default=100,
+    parser.add_argument('--window_size', required=False, type=int, default=500,
                         help='window size for feature extraction')
-    parser.add_argument('--shift_size', required=False, type=int, default=100,
+    parser.add_argument('--shift_size', required=False, type=int, default=500,
                         help='step size of windows')
     parser.add_argument('--emg_indices', required=False, type=int, default=6,
                         help='maximum index of EMG data columns')
@@ -54,4 +56,4 @@ if __name__ == '__main__':
     cm = confusion_matrix(ytest, yhat, ax=ax, show=False)
     ax.set_title('EMG Dataset Classification')
     plt.tight_layout()
-    plt.savefig('output.png')
+    plt.savefig(args.save_name)
