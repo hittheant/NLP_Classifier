@@ -18,19 +18,19 @@ if __name__ == '__main__':
                         help='path to model save directory')
     parser.add_argument('--save_name', required=False, type=str, default='output.png',
                         help='path to model save directory')
-    parser.add_argument('--model', required=False, type=str, default='lda',
+    parser.add_argument('--model', required=False, type=str, default='mlp',
                         help='type of model to train')
     parser.add_argument('--featureset', required=False, type=str, default='td5',
                         help='featureset to be extracted')
     parser.add_argument('--downsampling', required=False, type=int, default=1,
                         help='level of downsampling')
-    parser.add_argument('--window_size', required=False, type=int, default=500,
+    parser.add_argument('--window_size', required=False, type=int, default=1000,
                         help='window size for feature extraction')
-    parser.add_argument('--shift_size', required=False, type=int, default=100,
+    parser.add_argument('--shift_size', required=False, type=int, default=1000,
                         help='step size of windows')
     parser.add_argument('--emg_indices', required=False, type=int, default=6,
                         help='maximum index of EMG data columns')
-    parser.add_argument('--force_index', required=False, type=int, default=10,
+    parser.add_argument('--force_index', required=False, type=int, default=8,
                         help='force data to be classified')
     args = parser.parse_args()
 
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     data = hf.get('dat')
     data = np.array(data)
     data = data[:, ::args.downsampling]
-    y = class_bin(data[args.force_index], args.shift_size)
+    y = class_bin(data[args.force_index, :], args.shift_size)
     x = feature_extract(data[0:args.emg_indices, :], args.featureset,
                         args.window_size, args.shift_size)
 
