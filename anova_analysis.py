@@ -6,7 +6,7 @@ from utils import class_bin, feature_extract, anova_test
 hf = h5py.File('s15data.mat', 'r')
 data = hf.get('dat')
 data = np.array(data)
-y = class_bin(data[8, :], 100)
+y = class_bin(data[8, :], 500)
 
 sampling_rate = 10240
 
