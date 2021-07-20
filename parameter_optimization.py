@@ -55,4 +55,4 @@ if __name__ == '__main__':
                               window_size=window, shift_size=window)
             acc_row.append(acc)
         accs.append(acc_row)
-    print(accs)
+    np.save('accs.npy', accs)
