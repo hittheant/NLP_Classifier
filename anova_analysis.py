@@ -12,22 +12,22 @@ sampling_rate = 10240
 
 # TD5 Featureset
 print("TD5 Featureset")
-td5_features = feature_extract(data[0:6, :], 'td5', 100, 100)
+td5_features = feature_extract(data[0:6, :], 'td5', 500, 500)
 f, p = anova_test(td5_features, y)
 
 # AR Featureset
 print("AR Featureset")
-ar_features = feature_extract(data[0:6, :], 'ar', 100, 100)
+ar_features = feature_extract(data[0:6, :], 'ar', 500, 500)
 f, p = anova_test(ar_features, y)
 
 # Fourier Transform Featureset
 print("FT Featureset")
-ft_features = feature_extract(data[0:6, :], 'ft', 100, 100)
+ft_features = feature_extract(data[0:6, :], 'ft', 500, 500)
 anova_test(ft_features, y)
 
 # Wavelet Transform Featureset
 print("WT Featureset")
-ar_features = feature_extract(data[0:6, :], 'dwt', 100, 100)
+ar_features = feature_extract(data[0:6, :], 'dwt', 500, 500)
 anova_test(ar_features, y)
 
 ds_data = data[:, ::10]
@@ -56,21 +56,3 @@ f, p = anova_test(ft_features, y)
 print("WT Featureset")
 dwt_features = feature_extract(ds_data[0:6, :], 'dwt', 50, 50)
 f, p = anova_test(dwt_features, y)
-
-'''
-fig = plt.figure()
-for i in range(7):
-    ax = fig.add_subplot(7, 1, i + 1)
-    ax.plot(tfeat, features[:, i])
-
-    # ax.set_ylim( 0.35, 0.65 )
-    ax.set_ylabel('Ch %02d' % (i + 1))
-
-    if i == 0:
-        ax.set_title('Mean Absolute Value')
-    elif i == 6:
-        ax.set_xlabel('Feature Number')
-    else:
-        ax.set_xticks([])
-plt.show()
-'''

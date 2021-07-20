@@ -13,7 +13,8 @@ from sklearn.decomposition import PCA
 def class_bin(y, window, n_classes=3):
     y = np.mean(y.reshape(-1, window), axis=1)
     y_bin = np.zeros(np.shape(y))
-    y_bin[y > 2.5] = 1
+    y_bin[np.logical_and(y > 2.49, y < 2.51)] = 1
+    y_bin[y >= 2.51] = 2
     # bins = np.linspace(np.min(y), np.max(y), num=n_classes)
     return y_bin
 

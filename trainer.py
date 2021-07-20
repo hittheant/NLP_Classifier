@@ -24,9 +24,9 @@ if __name__ == '__main__':
                         help='featureset to be extracted')
     parser.add_argument('--downsampling', required=False, type=int, default=1,
                         help='level of downsampling')
-    parser.add_argument('--window_size', required=False, type=int, default=1000,
+    parser.add_argument('--window_size', required=False, type=int, default=500,
                         help='window size for feature extraction')
-    parser.add_argument('--shift_size', required=False, type=int, default=1000,
+    parser.add_argument('--shift_size', required=False, type=int, default=500,
                         help='step size of windows')
     parser.add_argument('--emg_indices', required=False, type=int, default=6,
                         help='maximum index of EMG data columns')
@@ -44,6 +44,7 @@ if __name__ == '__main__':
 
     Xtrain, Xtest, ytrain, ytest = train_test_split(x, y, test_size=0.33, shuffle=True)
 
+    print("Training model...")
     if args.model == 'lda':
         mdl = LinearDiscriminantAnalysis(Xtrain, ytrain)
     elif args.model == 'svm':
