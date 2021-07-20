@@ -27,8 +27,8 @@ anova_test(ft_features, y)
 
 # Wavelet Transform Featureset
 print("WT Featureset")
-ar_features = feature_extract(data[0:6, :], 'dwt', 500, 500)
-anova_test(ar_features, y)
+dwt_features = feature_extract(data[0:6, :], 'dwt', 500, 500)
+anova_test(dwt_features, y)
 
 ds_data = data[:, ::10]
 y_ds = class_bin(ds_data[8, :], 50)
@@ -40,19 +40,19 @@ print("Downsampled Data:")
 # TD5 Featureset
 print("TD5 Featureset")
 td5_features = feature_extract(ds_data[0:6, :], 'td5', 50, 50)
-f, p = anova_test(td5_features, y)
+f, p = anova_test(td5_features, y_ds)
 
 # AR Featureset
 print("AR Featureset")
 ar_features = feature_extract(ds_data[0:6, :], 'ar', 50, 50)
-f, p = anova_test(ar_features, y)
+f, p = anova_test(ar_features, y_ds)
 
 # Fourier Transform Featureset
 print("FT Featureset")
 ft_features = feature_extract(ds_data[0:6, :], 'ft', 50, 50)
-f, p = anova_test(ft_features, y)
+f, p = anova_test(ft_features, y_ds)
 
 # Wavelet Transform Featureset
 print("WT Featureset")
 dwt_features = feature_extract(ds_data[0:6, :], 'dwt', 50, 50)
-f, p = anova_test(dwt_features, y)
+f, p = anova_test(dwt_features, y_ds)
