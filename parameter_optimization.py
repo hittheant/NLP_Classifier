@@ -40,17 +40,18 @@ def run_trainer(data_dir='./s15data.mat', model='lda', featureset='td5',
 
 if __name__ == '__main__':
     fsets = ['td5', 'ar', 'td5ar', 'ft', 'dwt']
-    windows = range(200, 1000, 50)
+    windows = range(200, 1000, 100)
     models = ['lda', 'svm', 'mlp']
 
-    for model in models:
-        print(model)
-        accs = []
-        for window in windows:
-            acc_row = []
-            for fset in fsets:
-                acc = run_trainer(model=model, featureset=fset,
-                                  window_size=window, shift_size=window)
-                acc_row.append(acc)
-            accs.append(acc_row)
-        print(accs)
+    # for model in models:
+    model = 'lda'
+    print(model)
+    accs = []
+    for window in windows:
+        acc_row = []
+        for fset in fsets:
+            acc = run_trainer(model=model, featureset=fset,
+                              window_size=window, shift_size=window)
+            acc_row.append(acc)
+        accs.append(acc_row)
+    print(accs)
