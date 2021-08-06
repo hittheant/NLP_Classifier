@@ -16,7 +16,8 @@ def run_trainer(data_dir='./s15data.mat', model='lda', featureset='td5',
     hf = h5py.File(data_dir, 'r')
     data = hf.get('dat')
     data = np.array(data)
-    datalength = ((np.shape(data)[1]//downsampling)//window_size) * window_size
+    datalength = (np.shape(data)[1]//(window_size * downsampling)) * \
+                 (window_size * downsampling)
     data = data[:, :datalength:downsampling]
     y = class_bin(data[force_index, :], shift_size)
     x = feature_extract(data[0:emg_indices, :], featureset, window_size, shift_size)
