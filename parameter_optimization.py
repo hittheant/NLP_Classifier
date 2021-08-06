@@ -53,7 +53,8 @@ if __name__ == '__main__':
             acc_row = []
             for fset in fsets:
                 acc = run_trainer(model=model, featureset=fset,
-                                  window_size=window, shift_size=window)
+                                  window_size=window, shift_size=window,
+                                  downsampling=10)
                 acc_row.append(acc)
             accs.append(acc_row)
         np.save(model + '_accs.npy', accs)
