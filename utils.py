@@ -10,11 +10,14 @@ from sklearn.feature_selection import f_classif
 from sklearn.decomposition import PCA
 
 
-def class_bin(y, window, n_classes=3):
+def class_bin(y, window, n_classes=3, low=2.49, high=2.51):
     y = np.mean(y.reshape(-1, window), axis=1)
     y_bin = np.zeros(np.shape(y))
-    y_bin[np.logical_and(y > 2.49, y < 2.51)] = 1
-    y_bin[y >= 2.51] = 2
+    if n_classes == 3:
+        y_bin[np.logical_and(y > low, y < high)] = 1
+        y_bin[y >= high] = 2
+    else:
+        y_bin[y >= high] = 1
     # bins = np.linspace(np.min(y), np.max(y), num=n_classes)
     return y_bin
 
@@ -60,6 +63,6 @@ def feature_extract(data, featureset, window_size, shift_size):
 
 def anova_test(features, y):
     f, p = f_classif(features, y)
-    for i in range(len(f)):
-        print('Feature %d: %f %f' % (i, f[i], p[i]))
+    print(f)
+    print(p)
     return f, p
