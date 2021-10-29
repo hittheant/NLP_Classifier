@@ -1,6 +1,5 @@
 import h5py
 import numpy as np
-import matplotlib.pyplot as plt
 from tqdm import tqdm
 from sklearn.model_selection import train_test_split
 from mite.models.LinearDiscriminantAnalysis import LinearDiscriminantAnalysis
