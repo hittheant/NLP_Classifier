@@ -34,7 +34,7 @@ if __name__ == '__main__':
     datalength = (np.shape(data)[1]//args.window_size) * args.window_size
     fs = 10240 / args.downsampling
     data = data[:, :datalength:args.downsampling]
-    data[0:args.emg_indices, :] = butter_bandpass_filter(data[0:args.emg_indices, :], 50, fs/2, fs)
+    data[0:args.emg_indices, :] = butter_bandpass_filter(data[0:args.emg_indices, :], 50, (fs - 1)/2, fs)
     data[0:args.emg_indices, :] = comb_filter(data[0:args.emg_indices, :], fs, f0=(fs / round(fs / 60)))
     y = class_bin(data[args.force_index, :], args.shift_size)
     x = feature_extract(data[0:args.emg_indices, :], args.featureset,

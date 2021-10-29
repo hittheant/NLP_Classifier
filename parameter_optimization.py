@@ -19,7 +19,7 @@ def run_trainer(data_dir='./s15data.mat', model='lda', featureset='td5',
                  (window_size * downsampling)
     data = data[:, :datalength:downsampling]
     fs = fs / downsampling
-    data[0:emg_indices, :] = butter_bandpass_filter(data[0:emg_indices, :], 50, fs / 2, fs)
+    data[0:emg_indices, :] = butter_bandpass_filter(data[0:emg_indices, :], 50, (fs - 1) / 2, fs)
     data[0:emg_indices, :] = comb_filter(data[0:emg_indices, :], fs, f0=(fs / round(fs / 60)))
     y = class_bin(data[force_index, :], shift_size)
     x = feature_extract(data[0:emg_indices, :], featureset, window_size, shift_size)
