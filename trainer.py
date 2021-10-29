@@ -1,23 +1,17 @@
 import h5py
 import numpy as np
-import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from mite.models.LinearDiscriminantAnalysis import LinearDiscriminantAnalysis
 from mite.models.SupportVectorMachine import SupportVectorMachine
 from mite.models.MultiLayerPerceptron import MultiLayerPerceptron
 from argparse import ArgumentParser
-from utils import class_bin, feature_extract
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, \
-    precision_recall_fscore_support
+from utils import class_bin, feature_extract, butter_bandpass_filter, comb_filter
+from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
 
 if __name__ == '__main__':
     parser = ArgumentParser(description='Get image edge maps')
     parser.add_argument('--data_dir', required=False, type=str, default='./s15data.mat',
                         help='path to mat file')
-    parser.add_argument('--save_dir', required=False, type=str, default='.',
-                        help='path to model save directory')
-    parser.add_argument('--save_name', required=False, type=str, default='output.png',
-                        help='path to model save directory')
     parser.add_argument('--model', required=False, type=str, default='mlp',
                         help='type of model to train')
     parser.add_argument('--featureset', required=False, type=str, default='td5',
@@ -37,7 +31,11 @@ if __name__ == '__main__':
     hf = h5py.File(args.data_dir, 'r')
     data = hf.get('dat')
     data = np.array(data)
-    data = data[:, ::args.downsampling]
+    datalength = (np.shape(data)[1]//args.window_size) * args.window_size
+    fs = 10240 / args.downsampling
+    data = data[:, :datalength:args.downsampling]
+    data[0:args.emg_indices, :] = butter_bandpass_filter(data[0:args.emg_indices, :], 50, fs/2, fs)
+    data[0:args.emg_indices, :] = comb_filter(data[0:args.emg_indices, :], fs, f0=(fs / round(fs / 60)))
     y = class_bin(data[args.force_index, :], args.shift_size)
     x = feature_extract(data[0:args.emg_indices, :], args.featureset,
                         args.window_size, args.shift_size)

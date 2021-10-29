@@ -7,6 +7,7 @@ from mite.filters.wavelet.WaveletTransformFilter import WaveletTransformFilter
 from mite.filters.autoregressive.AutoRegressiveFilter import AutoRegressiveFilter
 from mite.filters.spectral.FourierTransformFilter import FourierTransformFilter
 from sklearn.feature_selection import f_classif
+from scipy.signal import butter, sosfilt, sosfreqz, iircomb, lfilter
 from sklearn.decomposition import PCA
 
 
@@ -52,12 +53,10 @@ def feature_extract(data, featureset, window_size, shift_size):
         features.append(data_filter.filter(np.transpose(window)))  # extract features
 
     features = np.vstack(np.array(features))
-
     if featureset == 'dwt' or featureset == 'ft':
         pca = PCA(n_components=np.shape(data)[0]*4)
         pca.fit(features)
         features = pca.transform(features)
-
     return features
 
 
@@ -66,3 +65,23 @@ def anova_test(features, y):
     print(f)
     print(p)
     return f, p
+
+
+def butter_bandpass(lowcut, highcut, fs, order=5):
+        nyq = 0.5 * fs
+        low = lowcut / nyq
+        high = highcut / nyq
+        sos = butter(order, [low, high], analog=False, btype='band', output='sos')
+        return sos
+
+
+def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
+        sos = butter_bandpass(lowcut, highcut, fs, order=order)
+        y = sosfilt(sos, data)
+        return y
+
+
+def comb_filter(data, fs, f0=60.0, Q=30):
+    b, a = iircomb(f0, Q, ftype='notch', fs=fs)
+    y = lfilter(b, a, data)
+    return y

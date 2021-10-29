@@ -1,14 +1,17 @@
 import h5py
 import numpy as np
-from utils import class_bin, feature_extract, anova_test
+from utils import class_bin, feature_extract, anova_test, butter_bandpass_filter, comb_filter
 
 # importing dataset
 hf = h5py.File('s15data.mat', 'r')
-data = hf.get('dat')
-data = np.array(data)
-y = class_bin(data[8, :], 500)
+raw_data = hf.get('dat')
+raw_data = np.array(raw_data)
+fs = 10240
 
-sampling_rate = 10240
+data = raw_data
+data[0:6, :] = butter_bandpass_filter(raw_data[0:6, :], 50, fs/2, fs)
+data[0:6, :] = comb_filter(data[0:6, :], fs, f0=(fs/round(fs/60)))
+y = class_bin(raw_data[8, :], 500)
 
 # TD5 Featureset
 print("TD5 Featureset")
@@ -30,7 +33,10 @@ print("WT Featureset")
 dwt_features = feature_extract(data[0:6, :], 'dwt', 500, 500)
 anova_test(dwt_features, y)
 
-ds_data = data[:, ::10]
+fs_ds = fs / 10
+ds_data = raw_data[:, ::10]
+ds_data[0:6, :] = butter_bandpass_filter(raw_data[0:6, :], 50, fs_ds/2, fs_ds)
+data[0:6, :] = comb_filter(data[0:6, :], fs_ds, f0=(fs_ds/round(fs_ds/60)))
 y_ds = class_bin(ds_data[8, :], 50)
 data = []
 y = []
