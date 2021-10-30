@@ -51,8 +51,8 @@ if __name__ == '__main__':
     # for model in models:
     for model in models:
         print(model)
-        accs = []
         for sampling in downsampling:
+            accs = []
             for window in tqdm(windows):
                 acc_row = []
                 for fset in fsets:

@@ -35,7 +35,7 @@ anova_test(dwt_features, y)
 
 fs_ds = fs / 10
 ds_data = raw_data[:, ::10]
-ds_data[0:6, :] = butter_bandpass_filter(raw_data[0:6, :], 50, (fs_ds - 1)/2, fs_ds)
+ds_data[0:6, :] = butter_bandpass_filter(ds_data[0:6, :], 50, (fs_ds - 1)/2, fs_ds)
 data[0:6, :] = comb_filter(data[0:6, :], fs_ds, f0=(fs_ds/round(fs_ds/60)))
 y_ds = class_bin(ds_data[8, :], 50)
 data = []
