@@ -53,10 +53,12 @@ def feature_extract(data, featureset, window_size, shift_size):
         features.append(data_filter.filter(np.transpose(window)))  # extract features
 
     features = np.vstack(np.array(features))
+    '''
     if featureset == 'dwt' or featureset == 'ft':
         pca = PCA(n_components=np.shape(data)[0]*4)
         pca.fit(features)
         features = pca.transform(features)
+    '''
     return features
 
 

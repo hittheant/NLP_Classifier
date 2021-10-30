@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from mite.models.LinearDiscriminantAnalysis import LinearDiscriminantAnalysis
 from mite.models.SupportVectorMachine import SupportVectorMachine
 from mite.models.MultiLayerPerceptron import MultiLayerPerceptron
-from utils import class_bin, feature_extract, butter_bandpass_filter, comb_filter
+from utils import class_bin, feature_extract, butter_bandpass_filter, comb_filter, anova_test
 from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
 
 
@@ -23,6 +23,8 @@ def run_trainer(data_dir='./s15data.mat', model='lda', featureset='td5',
     data[0:emg_indices, :] = comb_filter(data[0:emg_indices, :], fs, f0=(fs / round(fs / 60)))
     y = class_bin(data[force_index, :], shift_size)
     x = feature_extract(data[0:emg_indices, :], featureset, window_size, shift_size)
+    _, p = anova_test(x, y)
+    x = x[:, p < 0.05]
 
     Xtrain, Xtest, ytrain, ytest = train_test_split(x, y, test_size=0.33, shuffle=True)
 
@@ -56,6 +58,7 @@ if __name__ == '__main__':
             for window in tqdm(windows):
                 acc_row = []
                 for fset in fsets:
+
                     acc = run_trainer(model=model, featureset=fset,
                                       window_size=window, shift_size=window,
                                       downsampling=sampling)
