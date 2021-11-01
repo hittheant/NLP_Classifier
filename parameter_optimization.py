@@ -46,9 +46,9 @@ def run_trainer(data_dir='./s15data.mat', model='lda', featureset='td5',
 
 if __name__ == '__main__':
     fsets = ['td5', 'ar', 'td5ar', 'ft', 'dwt']
-    windows = range(80, 500, 10)
+    windows = range(800, 5000, 100)
     models = ['lda', 'mlp']
-    downsampling = [1, 10]
+    downsampling = [1]
 
     # for model in models:
     for model in models:
